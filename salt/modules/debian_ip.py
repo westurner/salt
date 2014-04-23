@@ -110,7 +110,7 @@ _DEB_CONFIG_BONDING_OPTS = [
     'ad_select', 'xmit_hash_policy', 'arp_validate',
     'fail_over_mac', 'all_slaves_active', 'resend_igmp'
 ]
-_DEB_CONFIG_BRIDGEING_OPTS = [
+_DEB_CONFIG_BRIDGING_OPTS = [
     'ageing', 'bridgeprio', 'fd', 'gcint',
     'hello', 'hw', 'maxage', 'maxwait',
     'pathcost', 'portprio', 'ports',
@@ -363,9 +363,9 @@ def _parse_interfaces():
                             sline.pop(0)
                             value = ' '.join(sline)
 
-                            if not 'bridgeing' in adapters[iface_name]['data'][context]:
-                                adapters[iface_name]['data'][context]['bridgeing'] = {}
-                            adapters[iface_name]['data'][context]['bridgeing'][opt] = value
+                            if not 'bridging' in adapters[iface_name]['data'][context]:
+                                adapters[iface_name]['data'][context]['bridging'] = {}
+                            adapters[iface_name]['data'][context]['bridging'][opt] = value
 
                         if sline[0].startswith('dns-nameservers'):
                             ud = sline.pop(0)
@@ -404,7 +404,7 @@ def _parse_interfaces():
     # Return a sorted list of the keys for bond, bridge and ethtool options to
     # ensure a consistent order
     for iface_name in adapters:
-        for opt in ['ethtool', 'bonding', 'bridgeing']:
+        for opt in ['ethtool', 'bonding', 'bridging']:
             if opt in adapters[iface_name]['data']['inet']:
                 opt_keys = sorted(adapters[iface_name]['data']['inet'][opt].keys())
                 adapters[iface_name]['data']['inet'][opt + '_keys'] = opt_keys
@@ -827,10 +827,9 @@ def _parse_settings_bond_6(opts, iface, bond_def):
 
 def _parse_bridge_opts(opts, iface):
     '''
-    Filters given options and outputs valid settings for BRIDGEING_OPTS
+    Filters given options and outputs valid settings for BRIDGING_OPTS
     If an option has a value that is not expected, this
-    function will log what the Interface, Setting and what it was
-    expecting.
+    function will log the Interface, Setting and what was expected.
     '''
     config = {}
 
@@ -934,10 +933,10 @@ def _parse_settings_eth(opts, iface_type, enabled, iface):
         adapters[iface]['data']['inet']['vlan_raw_device'] = re.sub(r'\.\d*', '', iface)
 
     if iface_type == 'bridge':
-        bridgeing = _parse_bridge_opts(opts, iface)
-        if bridgeing:
-            adapters[iface]['data']['inet']['bridgeing'] = bridgeing
-            adapters[iface]['data']['inet']['bridgeing_keys'] = sorted(bridgeing.keys())
+        bridging = _parse_bridge_opts(opts, iface)
+        if bridging:
+            adapters[iface]['data']['inet']['bridging'] = bridging
+            adapters[iface]['data']['inet']['bridging_keys'] = sorted(bridging.keys())
 
     if 'proto' in opts:
         valid = ['bootp', 'dhcp', 'none', 'static', 'manual', 'loopback']
