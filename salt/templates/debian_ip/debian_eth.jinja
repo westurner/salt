@@ -31,8 +31,18 @@ iface {{name}} {{interface.inet_type}} {{interface.proto}}
 iface {{name}} {{interface.inet_type}} {{interface.proto}}
 {% if interface.address %}    address {{interface.address}}
 {%endif%}{% if interface.netmask %}    netmask {{interface.netmask}}
-{%endif%}{% if interface.broadcast %}    broadcast {{interface.broadcast}}
 {%endif%}{% if interface.gateway %}    gateway {{interface.gateway}}
+{%endif%}{% if interface.media %}    media {{interface.media}}
+{%endif%}{% if interface.addr %}    hwaddress {{interface.addr}}
+{%endif%}{% if interface.endpoint %}    endpoint {{interface.endpoint}}
+{%endif%}{% if interface.local %}    local {{interface.local}}
+{%endif%}{% if interface.ttl %}    ttl {{interface.ttl}}
+{%endif%}{% if interface.mtu %}    mtu {{interface.mtu}}
+{%endif%}{% if interface.accept_ra %}    accept_ra {{interface.accept_ra}}
+{%endif%}{% if interface.autoconf %}    autoconf {{interface.autoconf}}
+{%endif%}{% if interface.privext %}    privext {{interface.privext}}
+{%endif%}{% if interface.dhcp %}    dhcp {{interface.dhcp}}
+{%endif%}{% if interface.scope %}    scope {{interface.scope}}
 {%endif%}{% if interface.up_cmds %}{% for cmd in interface.up_cmds %}    up {{ cmd }}
 {%endfor-%}
 {%endif%}{% if interface.down_cmds %}{% for cmd in interface.down_cmds %}    down {{ cmd }}

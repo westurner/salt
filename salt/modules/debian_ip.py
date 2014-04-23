@@ -332,7 +332,12 @@ def _parse_interfaces():
                     if line[0].isspace():
                         sline = line.split()
 
-                        if sline[0] in ['address', 'netmask', 'gateway', 'broadcast', 'network', 'mtu']:
+                        if sline[0] in ['address', 'netmask', 'broadcast',
+                                        'gateway', 'hwaddress', 'ttl', 'mtu',
+                                        'media', 'endpoint', 'local',
+                                        'accept_ra', 'autoconf',
+                                        'privext', 'dhcp', 'scope'
+                                        'network']:
                             adapters[iface_name]['data'][context][sline[0]] = sline[1]
 
                         if sline[0] == 'vlan-raw-device':
@@ -967,22 +972,67 @@ def _parse_settings_eth(opts, iface_type, enabled, iface):
         #adapters[iface]['data'].append({})
         adapters[iface]['data']['inet6'] = {}
         adapters[iface]['data']['inet6']['inet_type'] = 'inet6'
-        adapters[iface]['data']['inet6']['netmask'] = '64'
+        adapters[iface]['data']['inet6']['netmask'] = '64'  # defaults to 64
 
         if 'iface_type' in opts and opts['iface_type'] == 'vlan':
             adapters[iface]['data']['inet6']['vlan_raw_device'] = re.sub(r'\.\d*', '', iface)
 
         if 'ipv6proto' in opts:
-            adapters[iface]['data']['inet6']['proto'] = opts['ipv6proto']
+            value = opts['ipv6proto']
+            if value not in ['auto', 'loopback', 'static', 'manual',
+                             'dhcp', 'v4tunnel', '6to4']:
+                _raise_error_iface(iface, 'ipv6proto', ['valid IPv6 method'])
+            adapters[iface]['data']['inet6']['proto'] = value
 
         if 'ipv6addr' in opts:
             adapters[iface]['data']['inet6']['address'] = opts['ipv6addr']
 
-        if 'ipv6netmask' in opts:
+        if 'ipv6netmask' in opts:  # defaults to 64
+            try:
+                value = int(opts['ipv6netmask'])
+                if not (0 <= x <= 128):
+                    raise ValueError
+            except ValueError:
+                _raise_error_iface(iface, 'ipv6netmask', 'integer [0 -> 128]')
             adapters[iface]['data']['inet6']['netmask'] = opts['ipv6netmask']
 
-        if 'ipv6gateway' in opts:
-            adapters[iface]['data']['inet6']['gateway'] = opts['ipv6gateway']
+        for attr in ['ipv6gateway', 'ipv6media', 'ipv6endpoint', 'ipv6local',
+                     'ipv6ttl', 'ipv6mtu']:
+            if attr in opts:
+                adapters[iface]['data']['inet6'][attr] = opts[attr]
+
+        for attr in ['ipv6accept_ra', 'ipv6autoconf']:
+            if attr in opts:
+                try:
+                    int(opts[attr])
+                except ValueError:
+                    _raise_error_iface(iface, attr, ['integer [1 or 0]'])
+                adapters[iface]['data']['inet6'][attr] = opts[attr]
+
+        if 'ipv6autoconf' in opts:
+            try:
+                int(opts['ipv6autoconf'])
+            except ValueError:
+                _raise_error_iface(iface, 'ipv6autoconf', ['integer [1 or 0]'])
+            adapters[iface]['data']['inet6']['autoconf'] = opts['ipv6autoconf']
+
+        if 'ipv6privext' in opts:
+            try:
+                value = int(opts['ipv6privext'])
+                if value not in [0, 1, 2]:
+                    raise ValueError
+            except ValueError:
+                _raise_error_iface(iface, 'ipv6privext', ['integer [0 or 1 or 2]'])
+            adapters[iface]['data']['inet6']['privext'] = opts['ipv6privext']
+
+        if 'ipv6dhcp' in opts:
+            adapters[iface]['data']['inet6']['dhcp'] = opts['ipv6dhcp']
+
+        if 'ipv6scope' in opts:
+            value = opts['ipv6scope']
+            if value not in ['global', 'site', 'link', 'host']:
+                _raise_error_iface(iface, 'ipv6scope', ['global, site, link, or host'])
+            adapters[iface]['data']['inet6']['scope'] = opts['ipv6scope']
 
     return adapters
 
