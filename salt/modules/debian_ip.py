@@ -373,6 +373,12 @@ def _parse_interfaces():
                                 adapters[iface_name]['data'][context]['dns'] = []
                             adapters[iface_name]['data'][context]['dns'] = sline
 
+                        if sline[0].startswith('dns-search'):
+                            ud = sline.pop(0)
+                            if not 'dns_search' in adapters[iface_name]['data'][context]:
+                                adapters[iface_name]['data'][context]['dns_search'] = []
+                            adapters[iface_name]['data'][context]['dns_search'] = sline
+
                         if sline[0] in ['up', 'down', 'pre-up', 'post-up', 'pre-down', 'post-down']:
                             ud = sline.pop(0)
                             cmd = ' '.join(sline)
@@ -958,6 +964,9 @@ def _parse_settings_eth(opts, iface_type, enabled, iface):
 
     if 'dns' in opts:
         adapters[iface]['data']['inet']['dns'] = opts['dns']
+
+    if 'dns_search' in opts:
+        adapters[iface]['data']['inet']['dns_search'] = opts['dns_search']
 
     for opt in ['up_cmds', 'pre_up_cmds', 'post_up_cmds']:
         if opt in opts:
