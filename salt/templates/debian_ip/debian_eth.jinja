@@ -3,9 +3,9 @@
 {%endif%}{% if data.data['inet'] %}
 {%- set interface = data.data['inet'] -%}
 iface {{name}} {{interface.addrfam}} {{interface.proto}}
-{%endif%}{% if interface.addr %}    hwaddress {{interface.addr}}
+{%endif%}{% if interface.hwaddress %}    hwaddress {{interface.hwaddress}}
 {%endif%}{% if interface.vlan_raw_device %}    vlan-raw-device {{interface.vlan_raw_device}}
-{% if interface.address %}    address {{interface.address}}
+{%endif%}{% if interface.address %}    address {{interface.address}}
 {%endif%}{% if interface.netmask %}    netmask {{interface.netmask}}
 {%endif%}{% if interface.broadcast %}    broadcast {{interface.broadcast}}
 {%endif%}{% if interface.metric %}    metric {{interface.metric}}
@@ -20,8 +20,8 @@ iface {{name}} {{interface.addrfam}} {{interface.proto}}
 {%endif%}{% if interface.client %}    client {{interface.client}}
 {%endif%}{% if interface.bootfile %}    bootfile {{interface.bootfile}}
 {%endif%}{% if interface.server %}    server {{interface.server}}
-{%endif%}{% if interface.hwaddr %}    hwaddr {{interface.hwaddr}}
-{%endif%}{% if interface.mode %}    mode {{interface.mode}}
+{%endif%}{# if interface.hwaddr %}    hwaddress {{interface.hwaddr}}
+{%endif#}{% if interface.mode %}    mode {{interface.mode}}
 {%endif%}{% if interface.endpoint %}    endpoint {{interface.endpoint}}
 {%endif%}{% if interface.dstaddr %}    dstaddr {{interface.dstaddr}}
 {%endif%}{% if interface.local %}    local {{interface.local}}
@@ -46,7 +46,8 @@ iface {{name}} {{interface.addrfam}} {{interface.proto}}
 {%endif%}{% if interface.wpa_proto %}    wpa-proto {{interface.wpa_proto}}
 {%endif%}{% if interface.wpa_psk %}    wpa-psk {{interface.wpa_psk}}
 {%endif%}{% if interface.wpa_roam %}    wpa-roam {{interface.wpa_roam}}
-{%endif%}{% if interface.wpa_ssid %}    wpa-ssid {{interface.wpa_ssid}}{%endfor%}{%endif%}{% if interface.up_cmds %}{% for cmd in interface.up_cmds %}    up {{ cmd }}
+{%endif%}{% if interface.wpa_ssid %}    wpa-ssid {{interface.wpa_ssid}}
+{%endif%}{% if interface.up_cmds %}{% for cmd in interface.up_cmds %}    up {{ cmd }}
 {%endfor-%}
 {%endif%}{% if interface.down_cmds %}{% for cmd in interface.down_cmds %}    down {{ cmd }}
 {%endfor-%}
@@ -61,11 +62,11 @@ iface {{name}} {{interface.addrfam}} {{interface.proto}}
 {%endif%}{% if data.data['inet6'] %}
 {%- set interface = data.data['inet6'] -%}
 iface {{name}} {{interface.addrfam}} {{interface.proto}}
-{% if interface.address %}    address {{interface.address}}
+{% if interface.hwaddress %}    hwaddress {{interface.hwaddress}}
+{%endif%}{% if interface.address %}    address {{interface.address}}
 {%endif%}{% if interface.netmask %}    netmask {{interface.netmask}}
 {%endif%}{% if interface.gateway %}    gateway {{interface.gateway}}
 {%endif%}{% if interface.media %}    media {{interface.media}}
-{%endif%}{% if interface.addr %}    hwaddress {{interface.addr}}
 {%endif%}{% if interface.endpoint %}    endpoint {{interface.endpoint}}
 {%endif%}{% if interface.local %}    local {{interface.local}}
 {%endif%}{% if interface.ttl %}    ttl {{interface.ttl}}
