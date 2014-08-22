@@ -37,7 +37,7 @@ Now, to encrypt secrets, copy the public key to your local machine and run:
 
     $ gpg --import exported_pubkey.gpg
 
-To generate a cipher from a secret:
+To generate a ciphertext from a secret with GPG:
 
 .. code-block:: bash
 
@@ -50,7 +50,7 @@ config:
 
     renderer: jinja | yaml | gpg
 
-Now you can include your ciphers in your pillar data like so:
+Now you can include the ciphertext in your pillar data like so:
 
 .. code-block:: yaml
 
@@ -91,8 +91,8 @@ DEFAULT_GPG_KEYDIR = '/etc/salt/gpgkeys'
 def decrypt_ciphertext(c, gpg):
     '''
     Given a block of ciphertext as a string, and a gpg object, try to decrypt
-    the cipher and return the decrypted string. If the cipher cannot be
-    decrypted, log the error, and return the ciphertext back out.
+    the text and return a decrypted string. If the text cannot be
+    decrypted, log the error, and return the ciphertext unmodified.
     '''
     decrypted_data = gpg.decrypt(c)
     if not decrypted_data.ok:
@@ -126,8 +126,8 @@ def decrypt_object(o, gpg):
 
 def render(data, saltenv='base', sls='', argline='', **kwargs):
     '''
-    Create a gpg object given a gpg_keydir, and then use it to try to decrypt
-    the data to be rendered.
+    Create a `gnupg.GPG` object given a gpg_keydir, and then try to decrypt
+    the given data.
     '''
     if not HAS_GPG:
         raise SaltRenderError('GPG unavailable')
